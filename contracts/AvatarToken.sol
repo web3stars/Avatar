@@ -57,10 +57,9 @@ contract AvatarToken is ERC404 {
 
     function mintBatch(uint256 numTokens) external payable nonReentrant whenNotPaused {
         uint256 unit = _getUnit();
-        require(
-            numTokens > 0 && numTokens <= 5,
-            "Number of tokens must be greater than 0 and less than or equal to 5"
-        );
+        
+        require(msg.sender == owner() || ((balanceOfNFT(msg.sender) + numTokens)<= 5),"Only less than or equal to 5  can be mint");
+
         require(
             totalSupply/unit + numTokens <=
                 (maxCount - LEFT_COUNT),
