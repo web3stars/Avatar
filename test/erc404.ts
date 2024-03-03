@@ -2,32 +2,41 @@
 import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
-// AvatarToken deployed to: 0xa513E6E4b8f2a923D98304ec87F64353C4D5C853
-// ERC404FactoryProxyAdmin deployed to: 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
-// CircleQueue deployed to: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
-// ERC404FactoryProxy deployed to: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
-// AvatarToken deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
-// ERC404FactoryProxyAdmin deployed to: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
-// CircleQueue deployed to: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-// ERC404FactoryProxy deployed to: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+// No need to generate any newer typings.
+// AvatarToken deployed to: 0xc0F115A19107322cFBf1cDBC7ea011C19EbDB4F8
+// ERC404FactoryProxyAdmin deployed to: 0xc96304e3c037f81dA488ed9dEa1D8F2a48278a75
+// CircleQueue deployed to: 0x34B40BA116d5Dec75548a9e9A8f15411461E8c70
+// 0x5ffc30c200000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000271000000000000000000000000034b40ba116d5dec75548a9e9a8f15411461e8c700000000000000000000000000000000000000000000000000000000065f6db400000000000000000000000000000000000000000000000000000000000000011436f64654d6f6e6b65732041766174617200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064176617461720000000000000000000000000000000000000000000000000000
+// ERC404FactoryProxy deployed to: 0x07882Ae1ecB7429a84f1D53048d35c4bB2056877
+// 0x0000000000000000000000000000000000000000
+
 export const erc404Test = async function () {
     const ExampleToken = await ethers.getContractFactory("AvatarToken");
-    const exampleToken = await ExampleToken.attach("0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9");
+    const exampleToken = await ExampleToken.attach("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877");
     console.log(await exampleToken.tokenURI(0));
     console.log(await exampleToken.owner())
     console.log(await exampleToken.name())
     console.log(await exampleToken.balanceOfNFT("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
-    console.log("getPrice", await exampleToken.getPrice(1))
+    console.log("getPrice", await exampleToken.MINT_PRICE())
     console.log("\n");
-    console.log(await exampleToken.setDataURI('https://bafkreic44meqhl7xuxi4t3q2gofbdcxfbzb3xizzhwn2mh3n256zlqtstu.ipfs.nftstorage.link'));
-    console.log(await exampleToken.setLockTime(1708473600));
 
+    // console.log(await exampleToken.setDataURI('https://bafkreic44meqhl7xuxi4t3q2gofbdcxfbzb3xizzhwn2mh3n256zlqtstu.ipfs.nftstorage.link'));
+
+    // console.log(await exampleToken.setLockTime(1708473600));
+    //console.log(await exampleToken.setTokenURI('https://bafybeib4wdqvvul3ldqfhhwyb5pnxujjdskhx2lp46cr2vzka6zuavi22m.ipfs.nftstorage.link/'));
+    //console.log(await exampleToken.setTokenURI(''));
+    //console.log(await exampleToken.setTokenURI(''));
+    //console.log(await exampleToken.setLockTime(1708473600));
+    //Production version
+    //https://bafybeide3cudc5id7c76hbndw2xrfcm5aikobgp75cdgqeink7zcn3wooa.ipfs.nftstorage.link/
+    //https://bafybeib4wdqvvul3ldqfhhwyb5pnxujjdskhx2lp46cr2vzka6zuavi22m.ipfs.nftstorage.link/1.json
     //console.log(await exampleToken.setDataURI('https://bafybeic4of7matwwemjrki4etixgoo5qz2mdwjc2hm32xil4alzeeafuzy.ipfs.nftstorage.link'))
     console.log(await exampleToken.paused());
-    console.log(await exampleToken.unpause());
-    console.log(await exampleToken.paused());
-  
-    //await exampleToken.transfer("0x3195f2bF24B8cf96b446591C124e82455787bBC6", BigNumber.from("80000000"))
+  //  console.log(await  exampleToken.clearLock());
+  //   console.log(await exampleToken.unpause());
+  //   console.log(await exampleToken.paused());
+    
+    //console.log(await exampleToken.transfer("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec", BigNumber.from("80000000")))
   
     //generate random ethereum addresses
     let addresses = ['0xA6B68F4216C44E9A604176F01297F4FFFC595EAC',
@@ -40,7 +49,7 @@ export const erc404Test = async function () {
       '0x1FB335B37E357E887CD9B1E764EB7FE1B54F952E',
       '0xE4DC40870F7177E1F1C29D9EE16B67BB01968E8B',
       '0x513CB3CFE19197B84BCBB9A9A757D313D79D44C9',
-      // "0x3195f2bF24B8cf96b446591C124e82455787bBC6"
+      // "0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"
     ];
   
     let addresses2 = ['0x73EB7509827C13AABF8294D9AB6337676E5CB1ED',
@@ -54,7 +63,7 @@ export const erc404Test = async function () {
       '0xBD3F684FD242413C1236EA89D4A63A44C21C32E7',
       '0xE0051B2D7A72C68E2F3CBF20F464E2B9BAE9E624'];
     //await exampleToken.transfer('0x513CB3CFE19197B84BCBB9A9A757D313D79D44C9', BigNumber.from("100000000"))
-    //await exampleToken.transfer('0x3195f2bF24B8cf96b446591C124e82455787bBC6', BigNumber.from("100000000"))
+    //await exampleToken.transfer('0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec', BigNumber.from("100000000"))
     // await exampleToken.transfer('0xBD3F684FD242413C1236EA89D4A63A44C21C32E7', BigNumber.from("10000000"))
     // for (let i = 0; i < addresses.length; i++) {
     //    await exampleToken.transfer(addresses[i], BigNumber.from("10000000"))
@@ -63,11 +72,12 @@ export const erc404Test = async function () {
     //    await exampleToken.transfer(addresses2[i], BigNumber.from("10000000"))
     // }
     const CircleQueue = await ethers.getContractFactory("CircleQueue");
-    const circleQueue = await CircleQueue.attach("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0");
+    const circleQueue = await CircleQueue.attach("0x34B40BA116d5Dec75548a9e9A8f15411461E8c70");
   
-    console.log("Queue Size", await circleQueue.size())
+    console.log("Queue Size", await circleQueue.size()) 
     console.log("Queue Empty", await circleQueue.isEmpty())
-  
+    //console.log(await circleQueue.setAllowedCaller("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877",true));
+    //console.log(await avatarToken.owner())
     // for (let i = 0; i < 20; i++) {
     //   console.log(await exampleToken.mint({ value: BigNumber.from("10100000000000000") }))
     //   //console.log(await exampleToken.mint())
@@ -80,22 +90,27 @@ export const erc404Test = async function () {
     console.log(await exampleToken.balanceOfNFT("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
   
   
-    console.log(await exampleToken.balanceOf("0x3195f2bF24B8cf96b446591C124e82455787bBC6"))
-    console.log(await exampleToken.balanceOfNFT("0x3195f2bF24B8cf96b446591C124e82455787bBC6"))
+    console.log(await exampleToken.balanceOf("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"))
+    console.log(await exampleToken.balanceOfNFT("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"))
   
   
-    console.log(await exampleToken.balanceOf("0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"))
-    console.log(await exampleToken.balanceOfNFT("0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"))
+    console.log(await exampleToken.balanceOf("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877"))
+    console.log(await exampleToken.balanceOfNFT("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877"))
   
-  
-    for (let i = 0; i < addresses.length; i++) {
-      console.log(addresses[i], await exampleToken.balanceOf(addresses[i]))
-      console.log(addresses[i], await exampleToken.balanceOfNFT(addresses[i]))
-    }
-    for (let i = 0; i < addresses2.length; i++) {
-      console.log(addresses2[i], await exampleToken.balanceOf(addresses2[i]))
-      console.log(addresses2[i], await exampleToken.balanceOfNFT(addresses2[i]))
-    }
+    console.log(await exampleToken.lockTime());
+    //console.log(await exampleToken.transfer("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec", BigNumber.from("92000000000000000000000000")))
+   // console.log(await exampleToken.mint({ value: BigNumber.from("20480000000000000") }))
+   //console.log(await exampleToken.mintBatch(5,{ value: BigNumber.from("102400000000000000") }));
+    //console.log(await exampleToken.airdropToOwner(400));
+    
+    // for (let i = 0; i < addresses.length; i++) {
+    //   console.log(addresses[i], await exampleToken.balanceOf(addresses[i]))
+    //   console.log(addresses[i], await exampleToken.balanceOfNFT(addresses[i]))
+    // }
+    // for (let i = 0; i < addresses2.length; i++) {
+    //   console.log(addresses2[i], await exampleToken.balanceOf(addresses2[i]))
+    //   console.log(addresses2[i], await exampleToken.balanceOfNFT(addresses2[i]))
+    // }
     // console.log(await exampleToken.totalSupply())
   
     // console.log(await cryptoPets.generateSVG(4));

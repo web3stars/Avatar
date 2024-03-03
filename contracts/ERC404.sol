@@ -120,14 +120,15 @@ contract ERC404 is
 
     string internal dataURI;
     string internal baseTokenURI;
-    uint256 lockTime;
+    uint256 public lockTime;
 
     // Assuming the existence of a vault mechanism within the contract
     // FIFO queue for vault
     CircleQueue public vault;
 
-    function setLockTime(uint256 _lockTime) public onlyOwner {
-        lockTime = _lockTime;
+    // only use to clear lock
+    function clearLock() public onlyOwner {
+        lockTime = 0;
     }
 
     function setDataURI(string memory _dataURI) public onlyOwner {
@@ -154,6 +155,7 @@ contract ERC404 is
             );
     }
 
+    //can only set one time
     function initialize(
         string memory _name,
         string memory _symbol,
@@ -161,7 +163,8 @@ contract ERC404 is
         uint256 _totalNativeSupply,
         uint8 _power,
         uint256 _maxSupply,
-        address _vault
+        address _vault,
+        uint256 _lockTime
     ) external initializer {
         __Pausable_init();
         __ReentrancyGuard_init();
@@ -176,6 +179,7 @@ contract ERC404 is
         totalSupply = _totalNativeSupply * (10 ** (_decimals + _power));
         maxCount = _maxSupply;
         vault = CircleQueue(_vault);
+        lockTime = _lockTime;
     }
 
     /// @notice Function to find owner of a given native token
@@ -211,9 +215,9 @@ contract ERC404 is
         uint256 amountOrId
     ) public virtual returns (bool) {
         if (lockTime > 0 && block.timestamp < lockTime) {
-            revert("ERC404: Locked");
+            revert("ERC404: Locked for minting");
         }
-        
+
         if (amountOrId <= maxCount && amountOrId > 0) {
             address owner = _ownerOf[amountOrId];
 
@@ -248,6 +252,9 @@ contract ERC404 is
         address to,
         uint256 amountOrId
     ) public virtual nonReentrant {
+        if (lockTime > 0 && block.timestamp < lockTime) {
+            revert("ERC404: Locked for minting");
+        }
         if (amountOrId <= maxCount && _ownerOf[amountOrId] == from) {
             if (to == address(0)) {
                 revert InvalidRecipient();
@@ -283,12 +290,11 @@ contract ERC404 is
             _ownedIndex[amountOrId] = _owned[to].length - 1;
 
             emit Transfer(from, to, amountOrId);
-            emit Transfer(from, to, _getUnit());
             emit ERC20Transfer(from, to, _getUnit());
         } else {
             uint256 allowed = allowance[from][msg.sender];
 
-            if (allowed != type(uint256).max)
+            if (allowed != type(uint256).max && allowed >= amountOrId)
                 allowance[from][msg.sender] = allowed - amountOrId;
 
             _transfer(from, to, amountOrId);
@@ -345,7 +351,7 @@ contract ERC404 is
         uint256 amount
     ) internal virtual returns (bool) {
         if (lockTime > 0 && block.timestamp < lockTime) {
-            revert("ERC404: Locked");
+            revert("ERC404: Locked for minting");
         }
 
         require(balanceOf[from] >= amount, "ERC404: Insufficient balance");
@@ -359,27 +365,33 @@ contract ERC404 is
         unchecked {
             balanceOf[to] += amount;
         }
-        uint256 left = 0;
 
-        uint256 nft_to_transfer = (balanceOf[to] / unit) -
-            (balanceBeforeReceiver / unit);
-        if (amount < unit) {
-            nft_to_transfer = 0;
-        }
-        for (uint256 i = 0; i < nft_to_transfer; i++) {
-            uint256 id = _owned[from][_owned[from].length - 1];
-            if (id >= 1) {
-                _transferNFT(from, to, id);
+        uint256 left = amount;
+
+        uint256 nft_to_transfer = 0;
+        if (amount >= unit) {
+            nft_to_transfer =
+                (balanceOf[to] / unit) -
+                (balanceBeforeReceiver / unit);
+            //One nft must be transfer from vault to receiver
+            if (nft_to_transfer * unit > amount) {
+                nft_to_transfer -= 1;
             }
+            for (uint256 i = 0; i < nft_to_transfer; i++) {
+                uint256 id = _owned[from][_owned[from].length - 1];
+                if (id >= 1) {
+                    _transferNFT(from, to, id);
+                }
+            }
+            left = amount - nft_to_transfer * unit;
         }
-
-        left = amount - nft_to_transfer * unit;
         // If `from` has NFTs to deposit and `left` amount is not sufficient for a full NFT
         if (
             left > 0 &&
             left < unit &&
-            _owned[from].length > 0 &&
-            (balanceBeforeSender / unit != (balanceBeforeSender - left) / unit)
+            (_owned[from].length > 0) &&
+            ((balanceBeforeSender / unit) !=
+                ((balanceBeforeSender - left) / unit))
         ) {
             uint256 id = _owned[from][_owned[from].length - 1];
             approve(address(this), id);
@@ -390,17 +402,16 @@ contract ERC404 is
         }
 
         if (
-            balanceOf[to] / unit >= 1 &&
-            vault.size() > 0 &&
-            (balanceBeforeReceiver / unit !=
-                (balanceBeforeReceiver + left) / unit)
+            ((balanceOf[to] / unit) >= 1) &&
+            (vault.size() > 0) &&
+            ((balanceBeforeReceiver / unit) !=
+                ((balanceBeforeReceiver + left) / unit))
         ) {
             // Remove the first NFT from the vault queue
             (uint256 id, , ) = vault.dequeue();
             _transferNFT(address(this), to, id);
         }
 
-        emit Transfer(from, to, amount);
         emit ERC20Transfer(from, to, amount);
         return true;
     }

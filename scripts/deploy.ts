@@ -60,12 +60,16 @@ async function main() {
   await circleQueue.initialize();
 
   console.log("CircleQueue deployed to:", circleQueue.address);
+  //get UnixTimeStamp
+  //mint start time is 2024-03-03 20:00:00 UTC+8
+  let mintTime = 1709467200;
+  //mint time is 14 days
+  let time = mintTime + 14*86400;
 
-  let data = new Interface(AvatarTokenABI).encodeFunctionData('initialize', ["AvatarToken", "Avatar", 18,0, 8, 10000, circleQueue.address]);
+  let data = new Interface(AvatarTokenABI).encodeFunctionData('initialize', ["CodeMonkes Avatar", "Avatar", 18,0, 8, 10000, circleQueue.address, time]);
+  console.log(data);
   const ERC404FactoryProxy = await ethers.getContractFactory("ERC404FactoryProxy");
   const erc404FactoryProxy = await ERC404FactoryProxy.deploy(avatarToken.address, erc404FactoryProxyAdmin.address, data);
-
-  
 
   await erc404FactoryProxy.deployed();
   console.log("ERC404FactoryProxy deployed to:", erc404FactoryProxy.address);

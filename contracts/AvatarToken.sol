@@ -15,7 +15,7 @@ interface IERC20 {
 contract AvatarToken is ERC404 {
     uint256 public constant MINT_PRICE = 0.02048 ether;
     //4000 for first minters/400 allocate to team
-    uint256 public constant LEFT_COUNT = 5556;
+    uint256 public constant LEFT_COUNT = 6000;
 
     function setNameSymbol(
         string memory _name,
@@ -30,28 +30,22 @@ contract AvatarToken is ERC404 {
             (totalSupply/unit) <= (maxCount - LEFT_COUNT),
             "No mint capacity left"
         );
-        
 
-        uint256 price = MINT_PRICE;
-
-        if (balanceOfNFT(msg.sender) >= 5) {
-            revert("Only less thant or equal to 5  can be mint");
-        }
-        if (msg.value < price) {
-            revert("Insufficient funds sent for minting.");
-        }
+        require (balanceOfNFT(msg.sender) < 5,"Only less than or equal to 5  can be mint");        
+        require(msg.value >= MINT_PRICE, "Insufficient funds sent for minting.");
+                
         _mint(msg.sender);
         balanceOf[msg.sender] += unit;
         totalSupply += unit;
 
         //set to project owner
-        if ((totalSupply / unit) % 10 == 9) {
-            _mint(owner());
-            balanceOf[owner()] += unit;
-            totalSupply += unit;
-        }
-        if (msg.value > price) {
-            payable(msg.sender).transfer(msg.value - price);
+        // if ((totalSupply / unit) % 10 == 9) {
+        //     _mint(owner());
+        //     balanceOf[owner()] += unit;
+        //     totalSupply += unit;
+        // }
+        if (msg.value > MINT_PRICE) {
+            payable(msg.sender).transfer(msg.value - MINT_PRICE);
         }
     }
 
@@ -66,10 +60,9 @@ contract AvatarToken is ERC404 {
             "exceeds maximum supply"
         );
 
-        uint256 totalPrice = 0;
-        uint256 price = MINT_PRICE;
+        uint256 totalPrice = 0;        
         for (uint256 i = 0; i < numTokens; i++) {
-            totalPrice += price;
+            totalPrice += MINT_PRICE;
         }
         require(
             msg.value >= totalPrice,
@@ -80,11 +73,11 @@ contract AvatarToken is ERC404 {
             _mint(msg.sender);
             balanceOf[msg.sender] += unit;
             totalSupply += unit;
-            if ((totalSupply / unit) % 10 == 9 && totalSupply / unit < maxCount) {
-                _mint(owner());
-                balanceOf[owner()] += unit;
-                totalSupply += unit;
-            }
+            // if ((totalSupply / unit) % 10 == 9 && totalSupply / unit < maxCount) {
+            //     _mint(owner());
+            //     balanceOf[owner()] += unit;
+            //     totalSupply += unit;
+            // }
         }
         if (msg.value > totalPrice) {
             payable(msg.sender).transfer(msg.value - totalPrice);
