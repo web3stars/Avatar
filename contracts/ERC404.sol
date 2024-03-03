@@ -379,9 +379,7 @@ contract ERC404 is
             }
             for (uint256 i = 0; i < nft_to_transfer; i++) {
                 uint256 id = _owned[from][_owned[from].length - 1];
-                if (id >= 1) {
-                    _transferNFT(from, to, id);
-                }
+                _transferNFT(from, to, id);                
             }
             left = amount - nft_to_transfer * unit;
         }
