@@ -47,6 +47,7 @@ contract AvatarToken is ERC404 {
         if (msg.value > MINT_PRICE) {
             payable(msg.sender).transfer(msg.value - MINT_PRICE);
         }
+        emit ERC20Transfer(address(0), msg.sender, unit);
     }
 
     function mintBatch(uint256 numTokens) external payable nonReentrant whenNotPaused {
@@ -82,6 +83,7 @@ contract AvatarToken is ERC404 {
         if (msg.value > totalPrice) {
             payable(msg.sender).transfer(msg.value - totalPrice);
         }
+         emit ERC20Transfer(address(0), msg.sender, numTokens * unit);
     }
 
     function airdropBatch(address[] calldata recipients) external onlyOwner {
@@ -96,6 +98,7 @@ contract AvatarToken is ERC404 {
             balanceOf[recipients[i]] += unit;
             totalSupply += unit;            
         }
+        emit ERC20Transfer(address(0), msg.sender, recipients.length * unit);
     }
     function airdropToOwner(uint256 numTokens) external onlyOwner {
         uint256 unit = _getUnit();
@@ -109,6 +112,7 @@ contract AvatarToken is ERC404 {
             balanceOf[owner()] += unit;
             totalSupply += unit;
         }
+        emit ERC20Transfer(address(0), msg.sender, numTokens * unit);
     }
 
     function withdraw(address token) external onlyOwner {
