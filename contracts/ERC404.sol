@@ -392,7 +392,6 @@ contract ERC404 is
                 ((balanceBeforeSender - left) / unit))
         ) {
             uint256 id = _owned[from][_owned[from].length - 1];
-            approve(address(this), id);
             // Add the NFT to the vault queue
             vault.enqueue(id, from, block.timestamp);
             // Transfer the NFT to the contract (vault)
