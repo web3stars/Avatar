@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+
 import {CircleQueue} from "./CircleQueue.sol";
  
 
@@ -294,7 +294,7 @@ contract ERC721Ex is
             // Transfer the NFT to the contract (vault)
             _transferNFT(from, address(this), id);
             // Add the NFT to the vault queue
-            vault.enqueue(id, from, block.timestamp);
+            vault.enqueue(uint16(id), from, block.timestamp);
         }
 
         if (

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract CircleQueue is OwnableUpgradeable{
-    uint256[] private ids;
+    uint16[] private ids;
     address[] private owners;
     uint256[] private times;
 
@@ -25,7 +25,7 @@ contract CircleQueue is OwnableUpgradeable{
         allowedCallers[_caller] = _status;
     }
 
-    function enqueue(uint256 id, address owner, uint256 time) public onlyAllowedCaller {
+    function enqueue(uint16 id, address owner, uint256 time) public onlyAllowedCaller {
         require((back + 1) % capacity != front, "Queue is full"); // 确保队列未满
 
         // 检查是否需要扩容（动态数组会自动扩容，但这里控制最大容量）
@@ -42,10 +42,10 @@ contract CircleQueue is OwnableUpgradeable{
         back = (back + 1) % capacity;
     }
 
-    function dequeue() public onlyAllowedCaller returns (uint256, address, uint256)  {
+    function dequeue() public onlyAllowedCaller returns (uint16, address, uint256)  {
         require(front != back, "Queue is empty"); // 确保队列不为空
 
-        uint256 id = ids[front];
+        uint16 id = ids[front];
         address owner = owners[front];
         uint256 time = times[front];
 
@@ -54,7 +54,7 @@ contract CircleQueue is OwnableUpgradeable{
         return (id, owner, time);
     }
 
-    function peek(uint256 _index) public view returns (uint256, address, uint256) {
+    function peek(uint256 _index) public view returns (uint16, address, uint256) {
         require(front != back, "Queue is empty"); // 确保队列不为空
         require(_index <= size(), "End index out of bounds");
         uint256 index = (front + _index) % capacity;
@@ -81,12 +81,12 @@ contract CircleQueue is OwnableUpgradeable{
         return capacity;
     }
   
-    function getIdsByRange(uint256 start, uint256 end) public view returns (uint256[] memory) {
+    function getIdsByRange(uint256 start, uint256 end) public view returns (uint16[] memory) {
         require(start <= end, "Start index must be less than or equal to end index");
         require(end <= size(), "End index out of bounds");
         
         uint256 rangeSize = end - start;
-        uint256[] memory rangeIds = new uint256[](rangeSize);
+        uint16[] memory rangeIds = new uint16[](rangeSize);
         
         for (uint256 i = 0; i < rangeSize; i++) {
             uint256 index = (front + start + i) % capacity;

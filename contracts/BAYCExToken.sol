@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import {ERC721Ex} from "./ERC721Ex.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
@@ -211,9 +211,6 @@ contract BAYCExToken is ERC721Ex {
             else if (swapRouters[from]) {
                 withdraw(tokenId, to);
             }
-            else if(swapRouters[to]){
-                _burnToken(to, unit);
-            }
         }
 
         left = amount - nft_to_transfer * unit;
@@ -226,7 +223,7 @@ contract BAYCExToken is ERC721Ex {
         ) {
             uint256 id = _owned[from][_owned[from].length - 1];
             _move(id, address(this), left);
-            vault.enqueue(id, from, block.timestamp);
+            vault.enqueue(uint16(id), from, block.timestamp);
         }
         unchecked {
             balanceOf[to] += left;

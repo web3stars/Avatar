@@ -16,7 +16,7 @@ export const erc404Test = async function () {
     console.log(await exampleToken.tokenURI(0));
     console.log(await exampleToken.owner())
     console.log(await exampleToken.name())
-    console.log(await exampleToken.balanceOfNFT("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
+    console.log(await exampleToken.erc721BalanceOf("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
     console.log("getPrice", await exampleToken.MINT_PRICE())
     console.log("\n");
 
@@ -87,15 +87,15 @@ export const erc404Test = async function () {
     //await exampleToken.mint()
   
     console.log(await exampleToken.balanceOf("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
-    console.log(await exampleToken.balanceOfNFT("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
+    console.log(await exampleToken.erc721BalanceOf("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"))
   
   
     console.log(await exampleToken.balanceOf("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"))
-    console.log(await exampleToken.balanceOfNFT("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"))
+    console.log(await exampleToken.erc721BalanceOf("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec"))
   
   
     console.log(await exampleToken.balanceOf("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877"))
-    console.log(await exampleToken.balanceOfNFT("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877"))
+    console.log(await exampleToken.erc721BalanceOf("0x07882Ae1ecB7429a84f1D53048d35c4bB2056877"))
   
     console.log(await exampleToken.lockTime());
     //console.log(await exampleToken.transfer("0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec", BigNumber.from("92000000000000000000000000")))
@@ -105,11 +105,11 @@ export const erc404Test = async function () {
     
     // for (let i = 0; i < addresses.length; i++) {
     //   console.log(addresses[i], await exampleToken.balanceOf(addresses[i]))
-    //   console.log(addresses[i], await exampleToken.balanceOfNFT(addresses[i]))
+    //   console.log(addresses[i], await exampleToken.erc721BalanceOf(addresses[i]))
     // }
     // for (let i = 0; i < addresses2.length; i++) {
     //   console.log(addresses2[i], await exampleToken.balanceOf(addresses2[i]))
-    //   console.log(addresses2[i], await exampleToken.balanceOfNFT(addresses2[i]))
+    //   console.log(addresses2[i], await exampleToken.erc721BalanceOf(addresses2[i]))
     // }
     // console.log(await exampleToken.totalSupply())
   

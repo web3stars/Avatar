@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
@@ -393,7 +393,7 @@ contract ERC404 is
         ) {
             uint256 id = _owned[from][_owned[from].length - 1];
             // Add the NFT to the vault queue
-            vault.enqueue(id, from, block.timestamp);
+            vault.enqueue(uint16(id), from, block.timestamp);
             // Transfer the NFT to the contract (vault)
             _transferNFT(from, address(this), id);
         }
